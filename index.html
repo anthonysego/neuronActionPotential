@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+    body {
+    }
+
+    .line {
+        fill: none;
+        stroke: #000;
+        stroke-width: 1.5px;
+    }
+
+    #mainContainer {
+        font-family: 'Outfit', sans-serif;
+        position: relative;
+        height: auto;
+        width: 100%;
+        padding: 2em;
+    }
+
+    #neuronImg {
+        width: 65%;
+        height: 75%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+    }
+
+    #exciteImg, #inhibitImg {
+        width: 37%;
+        height: 50%;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        position: relative;
+        margin-right: -35px
+    }
+
+    #exciteImg {
+    }
+
+    #inhibitImg {
+    }
+
+    .specialText {
+        display: contents;
+        position: relative;
+        white-space: nowrap;
+    }
+
+    .svg-container {
+        display: inline-block;
+        position: relative;
+        width: 100%;
+        padding-bottom: 100%; /* aspect ratio */
+        vertical-align: top;
+        overflow: hidden;
+    }
+
+    .svg-content-responsive {
+        display: block;
+        position: absolute;
+        top: 10px;
+        left: 0;
+    }
+
+    #graph{
+        display:block;
+    }
+
+    .title{
+        text-align: center;
+        font-weight: 800;
+    }
+
+    .term{
+        font-weight: 600;
+    }
+
+    .apa-reference {
+        padding-left: 36px;
+        text-indent: -36px;
+    }
+
+</style>
+<head>
+</head>
+<meta name="viewport" content="width=device-width, initial-scale=0.5">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet">
+<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+
+<div id="mainContainer" role="main" class="container ">
+    <figure class="row justify-content-md-center">
+        <div class="col-4">
+            <div class="row" id="exciteContainer">
+                <img class="figure-img img-fluid rounded" id="exciteImg" src="./images/exciteStill.gif" />
+            </div>
+
+            <div class="row" id="inhibitContainer">
+                <img class="figure-img img-fluid rounded" id="inhibitImg" src="./images/inhibitStill.png" />
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="" id="neuronImgContainer">
+                <img class="figure-img img-fluid rounded" id="neuronImg" src="./images/neuronLabeledStill.gif" />
+            </div>
+        </div>
+
+    </figure>
+
+    <div class="row" id="instructions">
+
+        <div class="col-3 mx-auto">
+            Press up arrow, "W" key, or this button for excitatory signal
+            <button class="btn btn-success btn-lg center col-12" onClick="excitatoryAction()">Excite</button>
+
+        </div>
+
+        <div class="col-3 mx-auto">
+            Press down arrow, "S" key, or this button for inhibitory signal
+            <button class="btn btn-danger btn-lg center col-12" onClick="inhibitoryAction()">Inhibit</button>
+
+        </div>
+
+    </div>
+
+    <!--
+        <div class="card">
+            <div class="card-body" id="localPotenialDiplay">
+
+            </div>
+        </div>
+    -->
+    <svg id="graph" class="container" height="500" width="900"></svg>
+
+    <div><br>**If graph doesn't appear to be working refresh the page with f5. If left running for too long it will plot too many points based on time and doesn't currently reset**<br></div>
+
+    <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo">
+        What is happening here?
+    </button>
+    <button class="btn btn-outline-info" type="button" data-toggle="collapse" data-target="#collapseReferences" aria-expanded="false" aria-controls="collapseReferences">
+        References
+    </button>
+    <div class="collapse" id="collapseInfo">
+        <div class="card card-body">
+            <br><span class="term specialText">Terminology:</span>
+            <br>
+            <br><span class="term specialText">Neuron</span> - specialized cells that communicate to the brain from your body and from your body to your brain. They allow all of our thoughts, feelings, and actions to occur.
+            <br><br><span class="term specialText">Synapse</span> - the structure where a neuron passes signals to another neuron, muscle, or organ. The neurons do not touch and are separated by a synpatic cleft, and these neurons in communication are known as the presynatpic neuron and the postsynaptic neuron.
+            <br><br><span class="term specialText">Axon</span> - this is the tail like structure that has areas wrapped in myelin that carries the signal to other locations
+            <br><br><span class="term specialText">Axon Terminal</span> - the end of the neuron area that contains the neurotransmitters used in neuron communication
+            <br><br><span class="term specialText">Myelin Sheath</span> - fatty tissue wrapped around the axon that helps propagate the electrical signal down the axon
+            <br><br><span class="term specialText">Action Potential</span> - the abrupt change in voltage in the neuron membrane that sets off the electrical signal to allow communication between neurons
+            <br>
+            <br>A neuron will receive excitatory, or inhibitory, signals depending on what message it needs to communicate to the next neuron in its network.
+            <br>These signals will find chemically gated receptors in the synaptic cleft that provide a positive or negative charge, depending on the neurotransmitter
+            <br>
+            <br>A neuron's membrane has a resting potential of about -70mV. This means that if it is not doing anything, it will rest at this voltage.
+            <br>As the name implies, this resting potential is stored energy that has the potential to cause an action
+            <br>The membrane potential is maintained by negatively charged anions and potassium (K+) on the inside of the cell and Chloride (Cl-) and Sodium (Na+) on the outside of the cell creating, an electrochemical gradient.
+            <br>With each excitatory signal the local potential will change, it will depolarize the membrane slightly and once reaching threshold of about -55mV, the neuron will fire an action potential down its axon to release its own chemical signals and communicate to the next cell in its network.
+            <br>
+            <br>When reaching threshold, there are sodium voltage-gated channels on the cell membrane that open up
+            <br>Reaching threshold will allow a rush of sodium through these gated channels, making the membrane potential around +30mV, where the sodium channels will close and potassium channels will open.
+            <br>These potassium channels stay open longer and cause the membrane potential to go below resting potential slightly, and eventually the neuron will repolarize back to it's resting potential by passive diffusion of ions and the sodium/potassium pump
+            <br>Immediately after an action potential is an absolute refractory period where an action poential cannot occur. Right after that is a relative action potential where another action potential can occur, but it is harder because the voltage is slowly returning to the resting potential
+            <br>For another action potential to occur, there must be enough voltage to overcome the temporarily higher threshold.
+            <br>Action potentials are all-or-none occurrences. Either threshold is met and they fire, or they do not fire at all.
+            <br>
+            <br>This action potential will send a signal down the axon by opening a series of sodium channels in between the myelination coating the axon by help of a process called saltatory conduction.
+            <br>Axons can be very short, or very long, such as the nerve cell that goes from the bottom of our spinal cord to our foot.
+            <br>
+            <br>The electrical charge will reach the axon terminal where it will open calcium channels to move vesicles to release neurotransmitter into the synapse
+            <br>These neurotransmitters communicate to the next neuron, organ, or muscle by receptors that accept these neurotransmitters and then act accordingly
+            <br>
+            <br>The main excitatory neurotransmitter is: <span class="specialText" style="color: #027602;">Glutamate</span>
+            <br>The main inhibitory neurotransmitter is: <span class="specialText" style="color: #d70000;">GABA (Gamma-Aminobutyric Acid)</span>
+            <br>(Garret & Hough, 2018)
+            <br>A good mnemonic for remembering that sodium is on the outside of the cell and potassium is on the inside of the cell, creating this electrical gradients is: <span class="specialText" style="color: #ad00f7;">Salty Banana</span> (Bozeman Science, 2017)
+        </div>
+    </div>
+
+    <div class="collapse" id="collapseReferences">
+        <div class="card card-body">
+            <span class="title">References</span>
+            <br>
+            <p class="apa-reference">
+                Bozeman Science. (2017, January 23). The Action Potential [Video]. Youtube. <a href="https://www.youtube.com/watch?v=HYLyhXRp298&ab_channel=BozemanScience">https://www.youtube.com/watch?v=HYLyhXRp298&ab_channel=BozemanScience</a>
+            </p>            
+            <p class="apa-reference">
+                Cohen, C., Popovic, M. A., Klooster, J., Weil, M. T., Möbius, W., Nave, K. A., & Kole, M. (2020). Saltatory Conduction along Myelinated Axons Involves a Periaxonal Nanocircuit. Cell, 180(2), 311–322.e15. <a href="https://doi.org/10.1016/j.cell.2019.11.039">https://doi.org/10.1016/j.cell.2019.11.039</a>
+            </p>
+            <p class="apa-reference">
+                Garrett, B., Hough, G. (2018). Brain & Behavior: An introduction to behavioral neuroscience (5th ed., pp. 24-35). Sage Publications
+            </p>   
+            <p class="apa-reference">
+                Lovinger D. M. (2008). Communication networks in the brain: neurons, receptors, neurotransmitters, and alcohol. Alcohol research & health : the journal of the National Institute on Alcohol Abuse and Alcoholism, 31(3), 196–214.
+            </p>
+
+            <br> Other Acknowledgements:
+            <br><a href="https://phet.colorado.edu/sims/html/neuron/latest/neuron_en.html">Phet Ineractive Neuron Solution</a>
+            <br><a href="https://d3js.org/">Graph made with D3, Data-Driven Documents</a>
+            <br> Art and Code created by: Anthony Sego
+        </div>
+    </div>
+
+    <div><br>**Not Optimized for Mobile Devices**</div>
+</div>
+
+<script>
+
+    //canvas and image variables
+    var neuronImgElement = document.getElementById('neuronImg');
+    var exciteElement = document.getElementById('exciteImg');
+    var inhibitElement = document.getElementById('inhibitImg');
+
+    var actionPotentialImg = "./images/neuronLabeledGif.gif";
+    var inhibitLoopImg = "./images/inhibitLoop.gif";
+    var exciiteLoopImg = "./images/exciteLoop.gif";
+
+    var audio = [new Audio("./sounds/spark1.mp3"), new Audio("./sounds/spark2.mp3"), new Audio("./sounds/spark3.mp3")]
+    
+
+    //graph variables
+    var n = 75,
+        potential = 0,
+        localPotential = -70,
+        restingPotential = -70,
+        actionPotential = 30,
+        threshold = -55,
+        refractoryPeriod = -90,
+        refractoryIncrement = 2.5,
+        decrement = -0.25,
+        excitatoryIncrement = 5.5,
+        inhibitoryDecrement = -5,
+        count = 0,
+        duration = 750,
+
+        now = new Date(Date.now() - duration),
+        data = d3.range(n).map(function () { return restingPotential; });
+
+    /*
+    setInterval(function () {
+        document.getElementById('localPotenialDiplay').innerHTML = localPotential;
+    }, 50);
+    */
+
+    //d3 setup for Graph
+    var svg = d3.select("svg"),
+        margin = { top: 40, right: 40, bottom: 40, left: 75 },
+        width = +svg.attr("width") - margin.left - margin.right,
+        height = +svg.attr("height") - margin.top - margin.bottom,
+        g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    var x = d3.scaleLinear()
+        .domain([1, n - 2])
+        .range([0, width]);
+
+    var y = d3.scaleLinear()
+        .domain([-100, 40])
+        .range([height, 0]);
+
+    var line = d3.line()
+        .curve(d3.curveBasis)
+        .x(function (d, i) { return x(i); })
+        .y(function (d, i) { return y(d); });
+
+    d3.select("div#graph").append("div")
+        // Container class to make it responsive.
+        .classed("svg-container", true)
+        .append("svg")
+        // Responsive SVG needs these 2 attributes and no width and height attr.
+        .attr("preserveAspectRatio", "xMinYMin meet")
+        .attr("viewBox", "0 0 600 400")
+        // Class to make it responsive.
+        .classed("svg-content-responsive", true)
+        .attr("width", 600)
+        .attr("height", 400);
+
+    g.append("defs").append("clipPath")
+        .attr("id", "clip")
+        .append("rect")
+        .attr("width", width)
+        .attr("height", height);
+
+    g.append("g")
+        .attr("class", "axis axis--x")
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(x));
+
+    g.append("g").append("text")
+        .attr("transform", "translate(" + (width / 2) + " ," + (height + margin.bottom) + ")")
+        .style("text-anchor", "middle")
+        .text("Time (ms)");
+
+    g.append("g")
+        .attr("class", "axis axis--y")
+        .call(d3.axisLeft(y));
+
+    g.append("text")
+        .attr("transform", "rotate(-90)")
+        .attr("y", 0 - margin.left)
+        .attr("x", 0 - (height / 2))
+        .attr("dy", "1.5em")
+        .style("text-anchor", "middle")
+        .text("Membrane Potential (mV)");
+
+    g.append("g")
+        .attr("clip-path", "url(#clip)")
+        .append("path")
+        .datum(data)
+        .attr("class", "line")
+        .transition()
+        .duration(100)
+        .ease(d3.easeLinear)
+        .on("start", tick);
+
+    //button press actions
+    window.addEventListener('keydown', function (e) {
+        //up arrow pressed
+        if (e.keyCode == '38' || e.keyCode == '87') {
+            event.preventDefault();
+
+            excitatoryAction();
+            svg.keys = (svg.keys || []);
+            svg.keys[e.keyCode] = true;
+        }
+        //down arrow key pressed
+        if (e.keyCode == '40' || e.keyCode == '83') {
+            event.preventDefault();
+
+            inhibitoryAction();
+            svg.keys = (svg.keys || []);
+            svg.keys[e.keyCode] = true;
+        }
+    })
+
+    window.addEventListener('keyup', function (e) {
+        svg.keys[e.keyCode] = false;
+    })
+
+
+    //tick function for adding new data points to graph
+    function tick() {
+
+        //return to resting potential (-70) if above
+        if (localPotential > restingPotential) {
+            localPotential += decrement;
+        }
+
+        //return to resting potential (-70) if below
+        if (localPotential < restingPotential) {
+            localPotential += refractoryIncrement;
+        }
+
+        // Push a new data point onto the back.
+        data.push(localPotential);
+
+        // Redraw the line.
+        d3.select(this)
+            .attr("d", line)
+            .attr("stroke", "#000")
+            .attr("transform", null);
+
+        // Slide it to the left.
+        d3.active(this)
+            .attr("transform", "translate(" + x(0) + ",0)")
+            .transition()
+            .on("start", tick);
+
+        // Pop the old data point off the front.
+        data.shift();
+
+    }
+
+    function excitatoryAction() {
+        console.log("localPotential Push " + localPotential);
+        console.log("resting potential Push " + restingPotential);
+
+        exciteElement.src = exciiteLoopImg;
+
+        localPotential += excitatoryIncrement;
+
+        if (localPotential >= refractoryPeriod + 5) {
+            if (localPotential < threshold) {
+                data.push(localPotential);
+            }
+            else {
+
+                //set delay since button presses are faster than adding data to graph
+                setTimeout(function () {
+                    //get one of the audio files by random and play
+                    //var randomAudio = audio[Math.floor(Math.random() * audio.length)];
+                   // randomAudio.volume = 0.3;
+                    //randomAudio.play();
+                    //set neuron image to gif to play it
+                    neuronImgElement.src = actionPotentialImg;
+                }, 500)
+
+                data.push(85);
+                //this is broke.  Doesn't make data go to 30
+                //data.push(actionPotential);
+                console.log("action potential" + actionPotential);
+
+                localPotential = refractoryPeriod;
+
+                data.push(refractoryPeriod);
+                console.log("refratory period");
+            }
+        }
+    }
+
+    function inhibitoryAction() {
+        console.log("localPotential Push " + localPotential);
+        console.log("resting potential Push " + restingPotential);
+
+        inhibitElement.src = inhibitLoopImg;
+
+        localPotential += inhibitoryDecrement;
+
+        if (localPotential >= refractoryPeriod + 5) {
+            if (localPotential < threshold) {
+                data.push(localPotential);
+            }
+            else {
+
+                data.push(85);
+                //this is broke.  Doesn't make data go to 30
+                //data.push(actionPotential);
+                console.log("action period");
+
+                localPotential = refractoryPeriod;
+
+                data.push(refractoryPeriod);
+                console.log("refratory period");
+
+            }
+        }
+    }
+
+</script>
